@@ -3,8 +3,7 @@
 **Proyecto Integrador de Comunicaciones II (27145) — Escenario S1 — Grupo 03**
 Universidad Industrial de Santander, Escuela E3T
 
-> **Blog del proyecto:** _[agregar enlace público]_
-> **Video de socialización:** _[agregar enlace público]_
+ **Video de socialización:** _[agregar enlace público]_
 
 ## Integrantes
 
