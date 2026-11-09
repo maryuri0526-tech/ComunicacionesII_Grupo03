@@ -1,0 +1,407 @@
+%============================================================================
+\section{Fundamento teórico}\label{sec:fundamento}
+%============================================================================
+
+\subsection{Modulación BPSK}\label{subsec:bpsk}
+
+En BPSK cada bit se asocia a uno de dos símbolos antipodales. En banda base, la
+señal con pulso de conformación $p(t)$ es
+\begin{equation}
+  s(t)=A\sum_{k} a_k\,p(t-kT_s), \qquad a_k\in\{-1,+1\},
+  \label{eq:bpsk}
+\end{equation}
+donde $A$ es la amplitud y $T_s=1/R_s$ el periodo de símbolo. La información
+está solo en la componente en fase (I); con $M=2$, $k=\log_2M=1$ y $R_b=R_s$.
+Con pulso rectangular, $E_b=A^2T_s$, los símbolos están separados $2\sqrt{E_b}$
+y, en AWGN con filtro acoplado y umbral en cero~\cite{proakis2008},
+\begin{equation}
+  P_b^{\mathrm{AWGN}}=Q\!\left(\sqrt{2E_b/N_0}\right).
+  \label{eq:pb_awgn}
+\end{equation}
+Su PSD es $S_s(f)=A^2T_s\,\mathrm{sinc}^2(fT_s)$, con nulos en $f=\pm mR_s$, de
+modo que el ancho de banda entre primeros nulos es $2R_s$~\cite{sklar2001}. El
+lóbulo principal contiene cerca del \SI{90}{\percent} de la potencia y el primer
+lóbulo lateral está unos \SI{13,3}{\decibel} por debajo; con un pulso RRC de
+factor $\beta$, el ancho de banda sería $(1+\beta)R_s$.
+
+\textbf{Alternativa descartada.} En OOK, con igual energía por bit, los símbolos
+$0$ y $\sqrt{2E_b}$ están un factor $\sqrt2$ más cerca
+($P_b=Q(\sqrt{E_b/N_0})$, \SI{3}{\decibel} de penalización)~\cite{proakis2008}, y
+su umbral depende del nivel recibido, por lo que un impulso lo cruza con más
+facilidad. Por ello se eligió BPSK.
+
+\subsection{Ruido impulsivo frente a AWGN}\label{subsec:ruido}
+
+El AWGN es gaussiano, estacionario y afecta por igual a todas las muestras. La
+interferencia de origen humano es no gaussiana: los modelos de Middleton la
+describen como una mezcla dominada por pocos eventos intensos~\cite{middleton1977},
+y en tiempo discreto se usa el modelo Bernoulli-gaussiano~\cite{ghosh1996}. En
+este trabajo se empleó un tren periódico controlado de impulsos rectangulares
+de amplitud $A_i$, ancho $W$ y periodo $N_T$ muestras,
+\begin{equation}
+  i[n]=A_i\sum_{k}\Pi_W[n-kN_T],
+  \label{eq:tren}
+\end{equation}
+donde $\Pi_W[n]=1$ para $0\le n<W$. Representa las componentes periódicas del
+ruido de conmutación~\cite{zimmermann2002} y permite variar solo la amplitud.
+Su ciclo útil es $\delta=W/N_T$ y su potencia media $A_i^2\delta$: con $\delta$
+pequeño, la energía se concentra en pocas muestras y se reparte en una banda
+ancha, con envolvente espectral de primer nulo en $f_s/W$ y líneas espaciadas
+$f_T=f_s/N_T$; al ser unipolar, el tren también tiene una componente de continua
+$A_i\delta$. La Tabla~\ref{tab:awgn_vs_imp} resume las diferencias con el AWGN.
+
+\begin{table}[!t]
+\centering
+\caption{Comparación entre AWGN y ruido impulsivo periódico}
+\label{tab:awgn_vs_imp}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{0.24\columnwidth}p{0.35\columnwidth}p{0.35\columnwidth}@{}}
+\toprule
+\textbf{Aspecto} & \textbf{AWGN} & \textbf{Impulsivo periódico} \\
+\midrule
+Distribución temporal & Continua, todas las muestras & Concentrada en $W$ de cada $N_T$ muestras \\
+Amplitud & Gaussiana, media cero & Pico $A_i$, alta relación pico/media \\
+PSD & Piso plano & Líneas cada $f_T$ con envolvente ancha \\
+Constelación & Nube circular en ambos símbolos & Puntos aislados desplazados $A_i$ \\
+Error en BPSK & Gradual con $E_b/N_0$ & Umbral en $A_i W/\mathrm{SPS}\approx A$; piso de error \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[!t]
+\centering
+\captura[0.95\columnwidth]{escenario.png}
+\caption{Escenario S1: nodo Tx sobre la máquina, estación Rx de supervisión y
+fuentes de perturbación impulsiva (motores, contactores y variadores).
+Ilustración elaborada con apoyo de IA (Claude, Anthropic), que generó el código
+de dibujo; el contenido técnico fue revisado por el equipo.}
+\label{fig:escenario}
+\end{figure}
+
+\begin{figure*}[!t]
+\centering
+\begin{tikzpicture}[
+  font=\scriptsize,
+  >={Stealth[length=4pt]},
+  blk/.style={draw, rounded corners=2pt, align=center, minimum height=1.15cm,
+              inner sep=2pt, fill=blue!4, text width=1.6cm},
+  rx/.style={blk, fill=orange!8},
+  ch/.style={blk, fill=red!6, minimum height=0.85cm, text width=1.9cm},
+  sum/.style={draw, circle, inner sep=0pt, minimum size=0.45cm, fill=white},
+  obs/.style={draw=green!50!black, fill=green!8, rounded corners=1pt, font=\tiny,
+              align=center, inner sep=1.5pt},
+  tt/.style={font=\ttfamily\tiny}
+]
+  % Transmisor
+  \node[blk] (src) {Fuente binaria\\[1pt] \texttt{\tiny Random Source}\\[-1pt]\texttt{\tiny Pack/Unpack}};
+  \node[blk, right=0.35cm of src] (map) {Mapeo BPSK\\ $\{-1,+1\}$\\[1pt] \texttt{\tiny Chunks to Symbols}};
+  \node[blk, right=0.35cm of map] (int) {Pulso rectangular\\ SPS $=8$\\[1pt] \texttt{\tiny Interp. FIR Filter}};
+  \node[sum, right=1.0cm of int] (add) {$+$};
+  % Canal
+  \node[ch, above=0.45cm of add] (awgn) {AWGN de fondo\\ \texttt{\tiny noise\_amp} $=0{,}10$};
+  \node[ch, below=0.45cm of add] (imp) {Tren de impulsos\\ $A_i$, $W=4$, $N_T=500$};
+  % Receptor
+  \node[rx, right=2.3cm of add] (mf) {Filtro acoplado\\ promedio de 8\\[1pt] \texttt{\tiny Moving Average}};
+  \node[rx, right=0.35cm of mf] (smp) {Muestreo\\ 1 de cada 8\\[1pt] \texttt{\tiny Keep One in N}};
+  \node[rx, right=0.35cm of smp] (dec) {Decisión\\ $\mathrm{Re}\{z_k\}\gtrless 0$\\[1pt] \texttt{\tiny Binary Slicer}};
+  \node[rx, right=0.35cm of dec, text width=1.45cm] (ber) {BER\\[1pt] \texttt{\tiny XOR +}\\[-1pt]\texttt{\tiny Moving Average}};
+
+  \draw[->] (src) -- node[above=1pt]{$R_b$} (map);
+  \draw[->] (map) -- node[above=1pt]{$R_s$} (int);
+  \draw[->] (int) -- node[above=1pt]{$f_s$} (add);
+  \draw[->] (awgn) -- (add);
+  \draw[->] (imp) -- (add);
+  \draw[->] (add) -- (mf);
+  \draw[->] (mf) -- (smp);
+  \draw[->] (smp) -- (dec);
+  \draw[->] (dec) -- (ber);
+
+  % Bits de referencia
+  \coordinate (yref) at ([yshift=-0.35cm]imp.south);
+  \draw[->, dashed, gray] (src.south) -- (src.south |- yref) -- (ber.south |- yref) -- (ber.south);
+  \node[above=0pt, text=black!70, font=\tiny] at ($(src.south |- yref)!0.5!(int.south |- yref)$)
+       {bits transmitidos (referencia para la BER)};
+
+  % Bloques del canal
+  \begin{scope}[on background layer]
+    \node[draw=red!50, dashed, rounded corners=3pt, inner sep=4pt, fit=(awgn)(imp)(add),
+          label={[text=red!60!black, font=\tiny, anchor=south]north:Canal (banda base)}] {};
+    \node[draw=blue!40, dashed, rounded corners=3pt, inner sep=4pt, fit=(src)(map)(int),
+          label={[text=blue!60!black, font=\tiny, anchor=south]north:Transmisor}] {};
+    \node[draw=orange!60, dashed, rounded corners=3pt, inner sep=4pt, fit=(mf)(smp)(dec)(ber),
+          label={[text=orange!60!black, font=\tiny, anchor=south]north:Receptor}] {};
+  \end{scope}
+
+  % Puntos de observacion
+  \node[obs, below=0.12cm of mf] (o2) {Ojo};
+  \node[obs, below=0.12cm of smp] (o3) {Constelación\\ de decisión};
+  \node[obs] at ($(add.east)!0.62!(mf.west)+(0,0.75)$) (o1) {Tiempo, PSD,\\ constelación};
+  \draw[green!50!black, densely dotted] (o1.south) -- ($(add.east)!0.62!(mf.west)$);
+\end{tikzpicture}
+\caption{Diagrama técnico del sistema Tx--canal--Rx en banda base:
+$R_s=\SI{32}{\kilo\sym\per\second}$, $R_b=\SI{32}{\kilo\bit\per\second}$,
+SPS $=8$ y $f_s=\SI{256}{\kilo\samples\per\second}$. Los recuadros verdes
+indican los puntos de observación. Implementación:
+\texttt{S1\_BPSK\_Ruido\_Impulsivo\_Grupo3.grc} (bloques agregados en la Tabla~\ref{tab:bloques}).}
+\label{fig:bloques}
+\end{figure*}
+
+\subsection{Efecto del impulso sobre la decisión BPSK}\label{subsec:efecto}
+
+Con pulso rectangular, el filtro acoplado promedia las SPS muestras de cada
+símbolo. La variable de decisión del símbolo $k$ es
+\begin{equation}
+  z_k=\frac{1}{\mathrm{SPS}}\sum_{n\in k} r[n] = A\,a_k + A_{\mathrm{ef}} + \tilde{w}_k,
+  \label{eq:zk}
+\end{equation}
+donde $\tilde{w}_k$ tiene desviación $\sigma_z=\sigma_w/\sqrt{\mathrm{SPS}}$ y
+$A_{\mathrm{ef}}=A_iW/\mathrm{SPS}$ es la amplitud efectiva de un impulso que cae
+completo en el símbolo: el filtro acoplado lo diluye. Si una fracción
+$\rho=\mathrm{SPS}/N_T$ de los símbolos contiene un impulso positivo y $p_-$ es la
+fracción de ellos que vale $-1$ (1/2 con bits equiprobables),
+\begin{equation}
+  P_b\approx(1-\rho)\,Q\!\left(\tfrac{A}{\sigma_z}\right)
+  +\rho\left[p_-Q\!\left(\tfrac{A-A_{\mathrm{ef}}}{\sigma_z}\right)
+  +(1-p_-)Q\!\left(\tfrac{A+A_{\mathrm{ef}}}{\sigma_z}\right)\right].
+  \label{eq:pb_imp}
+\end{equation}
+Con $\sigma_z\ll A$, la BER es nula si $A_i<A\,\mathrm{SPS}/W$, vale
+$\rho p_-/2$ en el umbral y alcanza el piso $\rho p_-$ por encima de él:
+\begin{equation}
+  P_b\approx 0 \;\;(A_i<A\,\mathrm{SPS}/W),\qquad
+  P_b\approx\rho\,p_- \;\;(A_i>A\,\mathrm{SPS}/W).
+  \label{eq:pb_limite}
+\end{equation}
+El comportamiento es de umbral y el piso no depende de la energía de la señal,
+como se ha reportado para sistemas de portadora única~\cite{ghosh1996}. Como
+comparación, un receptor que tomara una sola muestra por símbolo, sin filtro
+acoplado, tendría el umbral en $A_i=A$, pero solo fallaría cuando el impulso
+coincide con el instante de muestreo, con $\rho\approx W/N_T$. El filtro acoplado
+eleva entonces el umbral de amplitud a cambio de que todo impulso influya en
+alguna decisión. Si el impulso tuviera componente en cuadratura, dispersaría la
+constelación en vertical sin alterar la decisión BPSK, que depende solo de la
+parte real: la dispersión visible no equivale necesariamente a errores.
+
+%============================================================================
+\section{Diseño del sistema y parámetros}\label{sec:diseno}
+%============================================================================
+
+\subsection{Escenario y parámetros}\label{subsec:escenario}
+
+Un nodo sobre una máquina transmite variables de baja velocidad a la estación
+de supervisión, en una nave con motores, contactores y variadores cuyas
+conmutaciones generan perturbaciones breves de gran amplitud
+(Fig.~\ref{fig:escenario}).
+
+Se verificó que el paquete de referencia del curso fuera adecuado: una
+vibración muestreada a \SI{1}{\kilo\samples\per\second} con 16 bits requiere
+\SI{16}{\kilo\bit\per\second}, la mitad de la tasa disponible, y la temperatura
+o el estado requieren mucho menos. Las relaciones de diseño son
+\begin{align}
+  k &= \log_2 2 = 1, \qquad R_b = R_s\,k = \SI{32}{\kilo\bit\per\second}, \label{eq:rb}\\
+  f_s &= R_s\cdot\mathrm{SPS} = \num{32000}\times 8 = \SI{256}{\kilo\samples\per\second}, \label{eq:fs}\\
+  B_{\mathrm{nulos}} &\approx 2R_s=\SI{64}{\kilo\hertz}, \label{eq:bw}
+\end{align}
+coherentes con el flujograma base. La ventana de la PSD
+($\pm f_s/2=\pm\SI{128}{\kilo\hertz}$) contiene el lóbulo principal y tres
+lóbulos laterales por lado. La Tabla~\ref{tab:parametros} resume el diseño.
+
+\begin{table}[!t]
+\centering
+\caption{Parámetros de diseño del sistema}
+\label{tab:parametros}
+\footnotesize
+\begin{tabular}{@{}llr@{}}
+\toprule
+\textbf{Parámetro} & \textbf{Símbolo} & \textbf{Valor} \\
+\midrule
+Modulación              & --                     & BPSK ($M=2$) \\
+Bits por símbolo        & $k$                    & 1 \\
+Tasa de símbolos        & $R_s$                  & \SI{32}{\kilo\sym\per\second} \\
+Tasa de bits            & $R_b$                  & \SI{32}{\kilo\bit\per\second} \\
+Periodo de símbolo      & $T_s=T_b$              & \SI{31,25}{\micro\second} \\
+Muestras por símbolo    & SPS                    & 8 \\
+Frecuencia de muestreo  & $f_s$                  & \SI{256}{\kilo\samples\per\second} \\
+Conformación de pulso   & $p(t)$                 & Rectangular \\
+Ancho de banda (nulos)  & $B_{\mathrm{nulos}}$   & \SI{64}{\kilo\hertz} \\
+Ancho de banda RRC (ref.)& $B_{\mathrm{RRC}}$    & \SI{43,2}{\kilo\hertz} \\
+Eficiencia espectral    & $R_b/B_{\mathrm{nulos}}$ & \SI{0,5}{\bit\per\second\per\hertz} \\
+Perturbación            & $i[n]$                 & Impulsiva periódica \\
+Variable experimental   & $A_i$                  & Amplitud del impulso \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Arquitectura del sistema}\label{subsec:arquitectura}
+
+En la Fig.~\ref{fig:bloques}, la fuente binaria alimenta el mapeo BPSK y el
+interpolador de pulso rectangular; el canal suma un AWGN de fondo fijo y el
+tren de~\eqref{eq:tren}; el receptor aplica el filtro acoplado, toma una
+muestra por símbolo, decide por signo y compara con los bits transmitidos
+para obtener la BER.
+
+%============================================================================
+\section{Metodología de simulación}\label{sec:metodologia}
+%============================================================================
+
+\begin{figure}[!t]
+\centering
+\captura[\columnwidth]{grc_base.png}
+\caption{Flujograma base del curso con fuente de AWGN.}
+\label{fig:grc_base}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\captura[\columnwidth]{grc_modificado.png}
+\caption{Flujograma modificado con generador de impulsos y receptor BPSK.}
+\label{fig:grc_mod}
+\end{figure}
+
+\begin{figure*}[!t]
+\centering
+\setlength{\tabcolsep}{1pt}
+\begin{tabular}{cccc}
+\captura[0.24\textwidth]{tiempo_A.png} & \captura[0.24\textwidth]{tiempo_B.png} &
+\captura[0.24\textwidth]{tiempo_C.png} & \captura[0.24\textwidth]{tiempo_D.png} \\
+\scriptsize (a) A: $A_i=0$ & \scriptsize (b) B: $A_i=1$ &
+\scriptsize (c) C: $A_i=2$ & \scriptsize (d) D: $A_i=4$ \\[2pt]
+\captura[0.24\textwidth]{psd_A.png} & \captura[0.24\textwidth]{psd_B.png} &
+\captura[0.24\textwidth]{psd_C.png} & \captura[0.24\textwidth]{psd_D.png} \\
+\scriptsize (e) A: $A_i=0$ & \scriptsize (f) B: $A_i=1$ &
+\scriptsize (g) C: $A_i=2$ & \scriptsize (h) D: $A_i=4$ \\
+\end{tabular}
+\caption{Señal en el canal (componentes I y Q; amplitud frente a tiempo en ms,
+ventana de \SI{8}{\milli\second}; la escala vertical se ajustó en cada prueba)
+en (a)--(d), y PSD (dB frente a frecuencia en kHz, $\pm\SI{128}{\kilo\hertz}$)
+en (e)--(h), para las cuatro pruebas.}
+\label{fig:tiempo_psd}
+\end{figure*}
+
+\begin{figure*}[!t]
+\centering
+\setlength{\tabcolsep}{1pt}
+\begin{tabular}{cccc}
+\captura[0.24\textwidth]{ojo_A.png} & \captura[0.24\textwidth]{ojo_B.png} &
+\captura[0.24\textwidth]{ojo_C.png} & \captura[0.24\textwidth]{ojo_D.png} \\
+\scriptsize (a) A: $A_i=0$ & \scriptsize (b) B: $A_i=1$ &
+\scriptsize (c) C: $A_i=2$ & \scriptsize (d) D: $A_i=4$ \\[2pt]
+\captura[0.24\textwidth]{const_A.png} & \captura[0.24\textwidth]{const_B.png} &
+\captura[0.24\textwidth]{const_C.png} & \captura[0.24\textwidth]{const_D.png} \\
+\scriptsize (e) A: $A_i=0$ & \scriptsize (f) B: $A_i=1$ &
+\scriptsize (g) C: $A_i=2$ & \scriptsize (h) D: $A_i=4$ \\
+\end{tabular}
+\caption{Diagrama de ojo a la salida del filtro acoplado (componente I; amplitud
+frente a tiempo en ms) en (a)--(d), y constelación en el instante de decisión
+(I frente a Q) en (e)--(h), para las cuatro pruebas.}
+\label{fig:ojo_const}
+
+\vspace{6pt}
+\setlength{\tabcolsep}{1pt}
+\begin{tabular}{cccc}
+\captura[0.24\textwidth]{const_sobre_A.png} & \captura[0.24\textwidth]{const_sobre_B.png} &
+\captura[0.24\textwidth]{const_sobre_C.png} & \captura[0.24\textwidth]{const_sobre_D.png} \\
+\scriptsize (a) A: $A_i=0$ & \scriptsize (b) B: $A_i=1$ &
+\scriptsize (c) C: $A_i=2$ & \scriptsize (d) D: $A_i=4$ \\
+\end{tabular}
+\caption{Constelación sobremuestreada a la salida del canal (todas las
+muestras, I frente a Q) para las cuatro pruebas.}
+\label{fig:const_sobre}
+\end{figure*}
+
+\subsection{Flujograma base y modificaciones}\label{subsec:grc_base}
+
+Se partió de \texttt{Modulaciones\_basadas\_en\_constelaciones\_AWGN.grc}, que
+conserva el transmisor del archivo base y suma ruido gaussiano
+(Fig.~\ref{fig:grc_base}). Su fuente aleatoria repite una secuencia de 1000
+bits, el bloque \texttt{Chunks to Symbols} usa la tabla de constelación y el
+interpolador con \texttt{h=[1]*Sps} forma el pulso rectangular. El original se
+conservó y se trabajó sobre la copia
+\texttt{S1\_BPSK\_Ruido\_Impulsivo\_Grupo3.grc}. Como la tabla por defecto era
+la de OOK, $(0,1)$, se cambió por la de BPSK, $(-1,+1)$, y se verificó que
+$M=2$ y $R_b=\SI{32}{\kilo\bit\per\second}$.
+
+La Tabla~\ref{tab:bloques} y la Fig.~\ref{fig:grc_mod} muestran los bloques
+agregados. El tren de impulsos se generó con un \texttt{Vector Source} de
+$N_T$ muestras, $W$ de ellas en uno, multiplicado por \texttt{A\_imp} y sumado
+en una tercera entrada del \texttt{Add}. El receptor usa un promedio móvil de
+SPS muestras como filtro acoplado, un \texttt{Keep One in N} que conserva la
+última muestra de cada símbolo (máximo del integrador) y un
+\texttt{Binary Slicer}, que entrega 1 si la parte real es positiva, de acuerdo
+con la asignación $0\to-1$ y $1\to+1$. La BER se obtiene con una XOR entre bits
+transmitidos y decididos, cuya salida vale 1 en cada error, promediada sobre
+$10^5$ bits (unos \SI{3,1}{\second}). Como ni el interpolador ni el promedio
+móvil introducen retardo de símbolo, ambas secuencias quedan alineadas; la
+alineación se validó con BER nula en la referencia.
+
+\begin{table}[!t]
+\centering
+\caption{Bloques agregados al flujograma}
+\label{tab:bloques}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{0.30\columnwidth}p{0.30\columnwidth}p{0.34\columnwidth}@{}}
+\toprule
+\textbf{Bloque} & \textbf{Parámetros} & \textbf{Función} \\
+\midrule
+\texttt{Vector Source} (complex) & \texttt{[1]*W\_imp + [0]*(N\_T-W\_imp)}, repetir & Forma del tren de impulsos \\
+\texttt{Multiply Const} & \texttt{A\_imp} & Amplitud del impulso (variable) \\
+\texttt{Add} (3 entradas) & -- & Señal + AWGN + impulsos \\
+\texttt{Moving Average} (complex) & longitud 8, escala $1/8$ & Filtro acoplado \\
+\texttt{QT GUI Eye Sink} & 8 muestras/símbolo & Diagrama de ojo \\
+\texttt{Keep One in N} & $N=8$ & Una muestra por símbolo \\
+\texttt{QT GUI Constellation Sink} & -- & Constelación de decisión \\
+\texttt{Complex to Real} + \texttt{Binary Slicer} & umbral 0 & Decisión de bit \\
+\texttt{XOR} + \texttt{Char to Float} & -- & Detección de errores \\
+\texttt{Moving Average} (float) & longitud $10^5$ & Estimación de BER \\
+\texttt{QT GUI Number Sink} & -- & Visualización de BER \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Plan de pruebas}\label{subsec:plan}
+
+Se fijaron $W=4$ muestras (\SI{15,6}{\micro\second}, medio símbolo) y
+$N_T=500$ (\SI{1,953}{\milli\second}). La repetición es más rápida que la de una
+conmutación real para observar cuatro impulsos por captura y reunir errores en
+pocos segundos. Como 500 no es múltiplo de 8, los impulsos caen alternadamente
+en la primera y la segunda mitad de un símbolo, pero siempre completos dentro
+de él, de modo que
+$\rho=\mathrm{SPS}/N_T=0{,}016$ y $A_{\mathrm{ef}}=A_i/2$. El AWGN de fondo
+(\texttt{noise\_amp} $=0{,}10$, $\sigma_z=0{,}025$) no produce errores por sí
+solo. Solo cambió $A_i$, con niveles alrededor del umbral teórico
+$A\,\mathrm{SPS}/W=2$ (Tabla~\ref{tab:pruebas}, con
+$\mathrm{SIR}=A^2/(A_i^2\delta)$ y la BER esperada para bits equiprobables). En cada prueba se esperaron
+al menos \SI{5}{\second} antes de registrar las gráficas y la BER.
+
+\begin{table}[!t]
+\centering
+\caption{Plan de pruebas: condición de referencia y tres niveles de perturbación}
+\label{tab:pruebas}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}clcccc@{}}
+\toprule
+\textbf{Prueba} & \textbf{Severidad} & \textbf{$A_i$} & \textbf{$A_{\mathrm{ef}}$} &
+\textbf{SIR [dB]} & \textbf{BER esperada} \\
+\midrule
+A & Referencia & 0   & 0   & $\infty$ & 0 \\
+B & Suave      & 1,0 & 0,5 & 21,0 & $\approx 0$ \\
+C & Media      & 2,0 & 1,0 & 14,9 & $\approx 4\times10^{-3}$ \\
+D & Fuerte     & 4,0 & 2,0 & 8,9  & $\approx 8\times10^{-3}$ \\
+\midrule
+\multicolumn{6}{@{}p{0.95\columnwidth}@{}}{Constantes: $W=4$, $N_T=500$,
+\texttt{noise\_amp} $=0{,}10$, $N_{\mathrm{ber}}=10^5$; $R_s$, SPS y $f_s$ según la
+Tabla~\ref{tab:parametros}.} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Hipótesis}\label{subsec:hipotesis}
+
+Antes de simular se esperaba que mayores amplitudes produjeran perturbaciones
+temporales más fuertes y mayor dispersión. Con el modelo anterior: impulsos
+visibles desde B sin errores; en C, BER cercana a $\rho/4=4\times10^{-3}$; en D,
+un piso de $\rho/2=8\times10^{-3}$ independiente de la potencia de la señal; y
+en la PSD, un nivel adicional de banda ancha creciente con $A_i^2$.

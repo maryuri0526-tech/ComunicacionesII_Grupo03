@@ -1,0 +1,40 @@
+\Needspace*{30\baselineskip}
+%============================================================================
+\section*{Anexo: preguntas previas a la simulación}\label{sec:anexo}
+%============================================================================
+\noindent\begin{minipage}{\columnwidth}
+\centering
+\captionof{table}{Respuestas a las preguntas de la guía del proyecto}
+\label{tab:preguntas}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{0.38\columnwidth}p{0.58\columnwidth}@{}}
+\toprule
+\textbf{Pregunta} & \textbf{Respuesta} \\
+\midrule
+1. Situación profesional & Nodo de telemetría de una planta de proceso que envía variables de máquina a una estación de supervisión. \\
+2. Fenómeno físico & Perturbaciones impulsivas breves y de gran amplitud generadas por la conmutación de motores, contactores, variadores y cargas inductivas. \\
+3. Información transmitida & Secuencia binaria con variables de baja velocidad: estado, temperatura o vibración. \\
+4. Modulación y razón & BPSK: símbolos antipodales con máxima separación y umbral fijo en cero; prioriza la robustez sobre la tasa. \\
+5. Alternativa descartada & OOK: \SI{3}{\decibel} menos de separación para igual energía y umbral dependiente del nivel recibido. \\
+6. Tasa de símbolos & $R_s=\SI{32}{\kilo\sym\per\second}$. \\
+7. Tasa de bits & $R_b=R_s\log_2 2=\SI{32}{\kilo\bit\per\second}$. \\
+8. Muestras por símbolo & SPS $=8$. \\
+9. Tasa de muestreo & $f_s=R_s\cdot\mathrm{SPS}=\SI{256}{\kilo\samples\per\second}$. \\
+10. Ancho de banda & $\approx 2R_s=\SI{64}{\kilo\hertz}$ entre primeros nulos (pulso rectangular). \\
+11. Variable experimental & Amplitud del impulso $A_i$: 0; 1; 2 y 4. \\
+12. Evidencias & Señal temporal, PSD, constelación sobremuestreada y de decisión, diagrama de ojo y BER. \\
+13. Resultado esperado & Impulsos visibles desde el nivel suave, sin errores mientras $A_iW/\mathrm{SPS}<A$, y un piso de BER por encima de ese umbral. \\
+\bottomrule
+\end{tabular}
+\end{minipage}
+
+%============================================================================
+\section*{Declaración de uso de herramientas de IA}
+%============================================================================
+Se utilizó un asistente de inteligencia artificial (Claude, de Anthropic) para
+apoyar la búsqueda de referencias, la redacción, la construcción del flujograma
+modificado y la elaboración de las Figs.~\ref{fig:escenario}
+y~\ref{fig:bloques}. Las simulaciones fueron ejecutadas por el equipo, cuyos
+integrantes revisaron y validaron parámetros, resultados y conclusiones, y
+asumen la responsabilidad por el contenido.

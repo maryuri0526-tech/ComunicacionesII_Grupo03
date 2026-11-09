@@ -1,0 +1,155 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+%=========================== CODIFICACIÓN E IDIOMA ===========================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla,es-nodecimaldot,es-noshorthands]{babel}
+\usepackage{textcomp}
+
+%=========================== MATEMÁTICAS Y UNIDADES ==========================
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{siunitx}
+\sisetup{output-decimal-marker={,}, group-separator={\,}, per-mode=symbol}
+\DeclareSIUnit\dbi{dBi}
+\DeclareSIUnit\sym{sym}
+\DeclareSIUnit\samples{S}
+
+%=========================== FIGURAS Y TABLAS ================================
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{stfloats}           % figuras de doble columna al pie [b]
+\usepackage{needspace}          % mantiene juntos título y tabla del anexo
+\renewcommand{\dblbotfraction}{0.75}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{caption}
+\captionsetup{labelfont=bf, textfont=normalfont}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,backgrounds}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+%=========================== REFERENCIAS Y CÓDIGO ============================
+\usepackage{url}
+\usepackage{cite}
+\usepackage{listings}
+\usepackage{listingsutf8}
+\usepackage{xcolor}
+\definecolor{codebg}{RGB}{248,248,248}
+\definecolor{codeframe}{RGB}{220,220,220}
+\definecolor{codekw}{RGB}{0,92,197}
+\definecolor{codestr}{RGB}{163,21,21}
+\definecolor{codecmt}{RGB}{0,128,0}
+\lstdefinestyle{bonito}{
+    language=Python,
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{codekw}\bfseries,
+    stringstyle=\color{codestr},
+    commentstyle=\color{codecmt}\itshape,
+    numberstyle=\tiny\color{gray},
+    numbers=left,
+    stepnumber=1,
+    frame=single,
+    rulecolor=\color{codeframe},
+    frameround=tttt,
+    framesep=6pt,
+    tabsize=2,
+    showstringspaces=false,
+    breaklines=true,
+    upquote=true,
+    xleftmargin=2em,
+    framexleftmargin=2em,
+    numbersep=8pt
+}
+
+%=========================== ESPACIADO =======================================
+\raggedbottom
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{1.2ex plus .3ex minus .2ex}{0.8ex}
+\titlespacing*{\subsection}{0pt}{1.0ex plus .3ex minus .2ex}{0.6ex}
+\titlespacing*{\subsubsection}{0pt}{0.8ex plus .2ex minus .2ex}{0.5ex}
+\setlength{\parskip}{0pt}
+\usepackage{enumitem}
+\setlist{nosep}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{0pt}
+\setlength{\textfloatsep}{10pt plus 1pt minus 2pt}
+\setlength{\floatsep}{8pt plus 1pt minus 2pt}
+\setlength{\intextsep}{8pt plus 1pt minus 2pt}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.8}
+
+%=========================== MACROS DEL PROYECTO =============================
+% Texto pendiente (en rojo) para localizar fácilmente lo que falta completar.
+\newcommand{\pendiente}[1]{\textcolor{red}{[#1]}}
+% Nombre de las palabras clave en español (IEEEtran usa "Index Terms").
+\renewcommand{\IEEEkeywordsname}{Palabras clave}
+% Inserta una captura de la carpeta figures/. Si el archivo aún no existe,
+% dibuja un recuadro rojo con el nombre esperado. Uso: \captura[ancho]{archivo.png}
+\newcommand{\captura}[2][\linewidth]{%
+  \IfFileExists{figures/#2}%
+    {\includegraphics[width=#1]{figures/#2}}%
+    {\fbox{\parbox[c][0.55\dimexpr#1\relax][c]{\dimexpr#1-2\fboxsep-2\fboxrule\relax}%
+      {\centering\scriptsize\pendiente{\texttt{figures/\detokenize{#2}}}}}}}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Proyecto Integrador de Comunicaciones II:\\
+Telemetría industrial bajo perturbaciones impulsivas}
+
+\author{
+\IEEEauthorblockN{Luis Miguel Higuera Ortiz}
+\IEEEauthorblockA{\textit{Universidad Industrial de Santander}\\
+Bucaramanga, Colombia\\
+luis2230411@correo.uis.edu.co}
+\and
+\IEEEauthorblockN{Valeria Rueda Luna}
+\IEEEauthorblockA{\textit{Universidad Industrial de Santander}\\
+Bucaramanga, Colombia\\
+Valeria2234069@correo.uis.edu.co}
+\and
+\IEEEauthorblockN{Maryuri Dayana Sanchez Sanchez}
+\IEEEauthorblockA{\textit{Universidad Industrial de Santander}\\
+Bucaramanga, Colombia\\
+Maryuri2230398@correo.uis.edu.co}
+\and
+\IEEEauthorblockN{Jhoan Sebastian Vega Martinez}
+\IEEEauthorblockA{\textit{Universidad Industrial de Santander}\\
+Bucaramanga, Colombia\\
+Jhoan2192280@correo.uis.edu.co}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\maketitle
+
+% Cada sección se importa desde la carpeta sections/ para facilitar el trabajo
+% conjunto. Los nombres de archivo no llevan tildes ni espacios (Overleaf).
+\input{sections/00_ABSTRACT}
+
+% INTRODUCCIÓN (presente/pasado, sin futuro)
+\input{sections/01_INTRODUCCION}
+\input{sections/01_1_OBJETIVOS}
+
+% FUNDAMENTO TEÓRICO, DISEÑO DEL SISTEMA Y METODOLOGÍA
+\input{sections/02_METODOLOGIA}
+
+% RESULTADOS Y ANÁLISIS
+\input{sections/03_RESULTADOS}
+
+% CONCLUSIONES (sin mencionar GitHub ni GNU Radio)
+\input{sections/04_CONCLUSIONES}
+
+\input{sections/04_1_ANEXOS}
+
+\input{sections/05_REFERENCIAS}
+
+\end{document}

@@ -1,0 +1,37 @@
+%============================================================================
+\section{Conclusiones}\label{sec:conclusiones}
+%============================================================================
+
+\begin{enumerate}[label=\arabic*), leftmargin=*]
+  \item El enlace BPSK con filtro acoplado toleró impulsos de casi el doble de
+        la amplitud del símbolo sin errores: el umbral observado coincidió con
+        $A\,\mathrm{SPS}/W=2$, y la constelación de decisión confirmó la
+        amplitud efectiva $A_iW/\mathrm{SPS}$.
+  \item Por encima del umbral la BER se estabilizó en $1{,}1\times10^{-2}$, sin
+        crecer al duplicar la amplitud: la degradación impulsiva es de umbral y
+        su piso depende de la fracción y polaridad de los símbolos alcanzados,
+        no de la relación señal a ruido gaussiano.
+  \item El filtro acoplado diluye los impulsos más cortos que el símbolo, pero
+        hace que todo impulso influya en alguna decisión.
+  \item La señal temporal, la constelación de decisión, el ojo y la BER
+        revelaron la perturbación; la PSD no, por lo que las medidas promediadas
+        no bastan para diagnosticar ruido impulsivo escaso.
+  \item El modelo reprodujo las mediciones al considerar la secuencia de prueba
+        periódica, que debe tratarse como parte del diseño experimental.
+  \item La prueba en hardware con 16QAM mostró que, en un enlace físico, la
+        relación señal a ruido en el receptor determina si la constelación es
+        reconocible, lo que refuerza la importancia de la separación entre
+        símbolos considerada al elegir la modulación.
+\end{enumerate}
+
+\textbf{Trabajo futuro.} Sería ideal implementar en hardware el sistema
+completo en el que se basó este proyecto: el enlace BPSK del escenario S1 con
+su receptor de filtro acoplado, transmitido entre radios HackRF One, para
+analizar experimentalmente el desempeño de la modulación seleccionada. Esa
+implementación permitiría medir la curva de BER frente a $E_b/N_0$ con la
+instrumentación de la fase de validación del curso, introducir perturbaciones
+impulsivas reales o inyectadas y compararla con 16QAM bajo las mismas
+condiciones. También se propone modelar llegadas aleatorias de impulsos
+(Middleton o Bernoulli-gaussiano), estudiar impulsos más largos que un símbolo
+y el pulso RRC, y evaluar el recorte o borrado de muestras y la codificación con
+entrelazado.

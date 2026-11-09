@@ -1,0 +1,36 @@
+%============================================================================
+\section{Introducción}\label{sec:introduccion}
+%============================================================================
+
+El monitoreo de variables como temperatura, vibración o estado de máquina es
+básico en la automatización industrial, y los enlaces inalámbricos que lo
+soportan deben cumplir requisitos estrictos de confiabilidad~\cite{willig2005}
+en entornos hostiles con interferencia de radiofrecuencia~\cite{gungor2009}. En
+una planta, la conmutación de motores, contactores, variadores y cargas
+inductivas produce interferencia impulsiva: eventos breves y de gran amplitud.
+Los dispositivos con conmutación electromecánica, entre ellos los motores, se
+han identificado como fuentes principales de este ruido~\cite{blackard1993}, que
+es habitual en entornos industriales y degrada los sistemas
+inalámbricos~\cite{chilo2009}; en canales sobre la red eléctrica incluye
+componentes periódicas que hacen al canal variante en el tiempo~\cite{zimmermann2002}.
+
+A diferencia del AWGN, estacionario y con potencia repartida en el tiempo, la
+interferencia de origen humano es no gaussiana y degrada severamente a los
+sistemas diseñados para ruido gaussiano~\cite{middleton1977}: concentra su
+energía en pocas muestras de alta potencia~\cite{pighi2009}, y en portadora
+única produce un piso de error que no desaparece al aumentar la energía de la
+señal~\cite{ghosh1996}.
+
+En este trabajo se estudió el escenario S1 del Proyecto Integrador de
+Comunicaciones~II, representado en banda base: un enlace BPSK con pulso
+rectangular, $R_s=\SI{32}{\kilo\sym\per\second}$, ocho muestras por símbolo y
+$f_s=\SI{256}{\kilo\samples\per\second}$, al que se sumó un ruido impulsivo
+periódico cuya amplitud fue la única variable, en una condición de referencia y
+tres niveles de severidad.
+
+El documento se organiza así: la Sección~\ref{sec:fundamento} presenta el
+fundamento teórico; la Sección~\ref{sec:diseno}, el diseño del sistema; la
+Sección~\ref{sec:metodologia}, la metodología de simulación; la
+Sección~\ref{sec:resultados}, los resultados y su análisis; la
+Sección~\ref{sec:hardware}, una prueba exploratoria en hardware SDR; y la
+Sección~\ref{sec:conclusiones}, las conclusiones.

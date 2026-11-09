@@ -1,0 +1,15 @@
+parametro,simbolo,valor,unidad
+Modulacion,-,BPSK,-
+Simbolos de la constelacion,M,2,-
+Bits por simbolo,k,1,bit/simbolo
+Tasa de simbolos,Rs,32000,sym/s
+Tasa de bits,Rb,32000,b/s
+Periodo de simbolo,Ts,31.25,us
+Muestras por simbolo,SPS,8,-
+Frecuencia de muestreo,fs,256000,S/s
+Pulso,p(t),rectangular,-
+Ancho de banda entre primeros nulos,B_nulos,64,kHz
+Ancho del impulso,W,4,muestras (15.6 us)
+Periodo del impulso,N_T,500,muestras (1.953 ms)
+AWGN de fondo,noise_amp,0.10,-
+Ventana de BER,N_ber,100000,bits

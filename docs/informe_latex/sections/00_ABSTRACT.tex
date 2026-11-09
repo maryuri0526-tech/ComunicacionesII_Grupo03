@@ -1,0 +1,24 @@
+%============================================================================
+% RESUMEN
+%============================================================================
+\begin{abstract}
+Se estudió un enlace de telemetría industrial de baja velocidad afectado por
+perturbaciones impulsivas de motores, contactores y variadores. El sistema se
+simuló en banda base con BPSK, pulso rectangular,
+$R_s=\SI{32}{\kilo\sym\per\second}$, ocho muestras por símbolo y
+$f_s=\SI{256}{\kilo\samples\per\second}$, con ruido gaussiano de fondo, un tren
+periódico de impulsos de amplitud controlada y un receptor con filtro acoplado.
+Se compararon una referencia y tres niveles de amplitud mediante la señal
+temporal, la PSD, la constelación, el diagrama de ojo y la BER. No hubo errores
+mientras la amplitud efectiva del impulso, diluida por el filtro acoplado, fue
+menor que la del símbolo; por encima, la BER alcanzó un piso de
+$1{,}1\times10^{-2}$, independiente de la amplitud y reproducido por el modelo
+analítico. La PSD no mostró cambios apreciables, por lo que las medidas
+promediadas no bastan para diagnosticar ruido impulsivo. Además, una prueba
+de laboratorio con 16QAM entre dos radios HackRF One mostró que la constelación
+solo fue reconocible al aumentar la relación señal a ruido acercando las placas.
+\end{abstract}
+
+\begin{IEEEkeywords}
+BPSK, ruido impulsivo, telemetría industrial, filtro acoplado, tasa de error de bit.
+\end{IEEEkeywords}
