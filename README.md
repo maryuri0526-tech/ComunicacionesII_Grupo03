@@ -37,7 +37,7 @@ Se simuló en banda base un enlace de telemetría industrial de baja velocidad a
 ## Archivo GRC principal y cómo ejecutarlo
 
 - **Archivo principal:** `grc/archivos_modificados/S1_BPSK_Ruido_Impulsivo_Grupo3.grc`
-- **Archivos de referencia (sin modificar):** `grc/archivos_originales_o_referencia/`
+- **Archivos de referencia (sin modificar):** `grc/archivos_de_referencia/`
 
 Pasos:
 1. Abrir el archivo en GNU Radio Companion 3.10.
