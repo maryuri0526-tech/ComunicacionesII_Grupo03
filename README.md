@@ -3,8 +3,6 @@
 **Proyecto Integrador de Comunicaciones II (27145) — Escenario S1 — Grupo 03**
 Universidad Industrial de Santander, Escuela E3T
 
- **Video de socialización:** _[agregar enlace público]_
-
 ## Integrantes
 
 - Luis Miguel Higuera Ortiz
